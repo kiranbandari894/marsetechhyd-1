@@ -1,3 +1,13 @@
+<?php 
+date_default_timezone_set("Asia/kolkata");  
+include_once('./constants.php');
+include('./classes/main_class.php');
+$obj = new marsetech(HOST,USER,PASS,DB);
+$products = $obj->load_products("products");
+
+ 
+$host = HOST;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +61,7 @@
               <a class="nav-link active" aria-current="page" href="?contact"><i class="fas fa-address-book"></i> Contact us</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href=""><i class="fas fa-sign-in-alt"></i> Login</a>
+              <a class="nav-link active" data-bs-toggle="modal" data-bs-target="#Login_admin" aria-current="page" href=""><i class="fas fa-sign-in-alt"></i> Login</a>
             </li>
             <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -68,8 +78,8 @@
               <a class="nav-link disabled">Disabled</a>
             </li> -->
         </ul>
-        <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Certificate No." aria-label="Search">
+        <form class="d-flex" action="./calibration_search.php?cer_no=" data-host="<?php echo SERCH_URL;  ?>" role="search" method="GET" id="search_form">
+            <input class="form-control me-2 search_certificate" type="text" name="search_certificate" placeholder="Certificate No." aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
         </div>
@@ -185,49 +195,43 @@ There are largely three main sets of standards: United States, Japanese, and Eur
               <div class="col-sm-12 col-md-6">
 <!--  Product Cards   -->
                  <div class="card" style="max-width: 100%;height:100%!important;">
+              <?php
+               if($products){
+
+               
+               foreach($products as $product){ 
+               ?>
                  <div class="row g-0 border border-info">
                   <div class="col-md-4">
-                    <img src="img/test.jfif" class="img-fluid rounded-start" alt="...">
+                    <img src="img/products_img/<?php echo $product['cover_images']; ?>" class="img-fluid rounded-start" alt="...">
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                      <h5 class="card-title">Diesel Smoke Meter</h5>
-                      <h6><i class="fas fa-rupee-sign"></i> 1.25 Lakhs </h6> 
+                      <h5 class="card-title"><?php echo $product['machine_name']; ?></h5>
+                      <h6><i class="fas fa-rupee-sign"></i> <?php echo $product['machine_price']; ?> </h6> 
                       <ul>
                         <li><b>Brand:</b> Marse</li>
-                        <li><b>Weight: 6kg</b></li>
-                        <li><b>Measuring Range: CO 0-10,co2 0-20%</b></li>
+                        <!-- <li><b>Weight: 6kg</b></li> -->
+                        <!-- <li><b>Measuring Range: CO 0-10,co2 0-20%</b></li> -->
                         <!-- <li><b>Dimension(Millimeter): 260mm(W)x180mm(H)x450mm(D)</b></li> -->
                         <li><b>Power Supply(V per Hz):220V </b></li>
                         <!-- <li><b>Warm Up: 10min</b></li> -->
                       </ul>
-                       <p style="line-height:31px;">Contact: +919999999999 Or Chat  <a class="text-success" style="font-size:32px;" href="https://wa.me/+918074765166?text=Hi Sir,I need Inforamtion about machine"><i class="fab fa-whatsapp"></i></a></p>
-                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                       <p style="line-height:31px;">Contact: <?php echo $product['mobile'];   ?> or Chat  <a class="text-success" style="font-size:32px;" href="#"><i class="fab fa-whatsapp"></i></a></p>
+                      <p class="card-text"><small class="text-muted"><?php echo $product['uploaded_on']; ?></small></p>
                     </div>
                   </div>
                 </div>
 
-                <div class="row g-0 mt-2 border border-info">
-                  <div class="col-md-4">
-                    <img src="img/test.jfif" class="img-fluid rounded-start" alt="...">
-                  </div>
-                  <div class="col-md-8">
-                    <div class="card-body">
-                      <h5 class="card-title">Diesel Smoke Meter</h5>
-                      <h6><i class="fas fa-rupee-sign"></i> 1.25 Lakhs </h6>
-                      <ul>
-                        <li><b>Brand:</b> Marse</li>
-                        <li><b>Weight: 6kg</b></li>
-                        <li><b>Measuring Range: CO 0-10,co2 0-20%</b></li>
-                        <!-- <li><b>Dimension(Millimeter): 260mm(W)x180mm(H)x450mm(D)</b></li> -->
-                        <li><b>Power Supply(V per Hz):220V </b></li>
-                        <!-- <li><b>Warm Up: 10min</b></li> -->
-                      </ul>
-                      <p style="line-height:31px;">Contact: +919999999999 Or Chat  <a class="text-success" style="font-size:32px;" href="https://wa.me/+918074765166?text=Hi Sir,I need Inforamtion about machine"><i class="fab fa-whatsapp"></i></a></p>
-                      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                <?php
+                  } 
+                }else{ ?>
+                  <div class="row">
+                    <div class="col-sm-12">
+                       <p class="alert alert-danger"> No Products found</p>
                     </div>
                   </div>
-                </div>
+                <?php    } ?>
               </div>
 <!--  Product Cards Ends  -->
               </div>
@@ -254,7 +258,7 @@ There are largely three main sets of standards: United States, Japanese, and Eur
                Shalivahannagar,Moosarambagh,<br>
                Hyderabad,<br>
                Telangana<br>
-               Mobile : +91 8074765166 or Chat - <a class="text-success" style="font-size:32px;" href="https://wa.me/+918074765166?text=Hi Sir,I need Inforamtion about machine"><i class="fab fa-whatsapp"></i></a></p>
+               Mobile : +91 8074765166 or Chat - <a class="text-success" style="font-size:32px;" href="#"><i class="fab fa-whatsapp"></i></a></p>
              </address>
           </div>
           <div class="col-sm-6">
@@ -265,7 +269,7 @@ There are largely three main sets of standards: United States, Japanese, and Eur
                 <div class="form-group p-2">
                    <label for="name">Name:<sup style="font-size" class="text-danger">*</sup></label>
                    <input type="text" class="form-control" name="name" placeholder="Enter Your Name" required>
-                   <input type="hidden" class="form-control" name="date">
+                   
                 </div>
                 
                 <div class="form-group p-2">
@@ -299,14 +303,17 @@ There are largely three main sets of standards: United States, Japanese, and Eur
                 <div class="form-group p-2">
                    <label for="query">Your Query:<sup style="font-size" class="text-danger">*</sup></label>
                    <textarea class="form-control" id="yourQuery" name="yourQuery" rows="3" required></textarea>
+                   <input type="hidden" class="form-control" name="date">
                 </div>
-                <div class="form-group text-center">
-                  <img id="loading_img" src="img/loading-gif.gif" alt="">
+                <div class="form-group text-center" id="loadimg">
+                   <img id="loading_img"  src="img/loading-gif.gif" alt="">
                 </div>
                 <div class="form-group text-center p-4">
                   <input type="submit" class="btn btn-primary" value="submit">
                 </div>
-                
+                <div class="form-group">
+                   <div class="result"></div>
+                </div>
              </form>
           </div>
         </div>
@@ -324,11 +331,78 @@ There are largely three main sets of standards: United States, Japanese, and Eur
    </div>
     
   <!-- Js scripts -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="css/fontawsome/js/all.min.js"></script>
-    <script src="js/main.js"></script>
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./css/fontawsome/js/all.min.js"></script>
+    <script src="./js/main.js"></script>
+    
   <!-- Js scripts End-->
-
+<!-- Modal -->
+<div class="modal fade" id="Login_admin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Admin Login</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="classes/handler.php?login" id="login_data" method="POST">
+          <div class="form-group">
+            <label for="email">Username</label>
+            <input type="email" class="form-control" placeholder="example@gmail.com" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" placeholder="**********" name="password" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </div>
+        </form>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<!-- Modal End -->
+ <!-- Modal search -->
+ <div class="modal" tabindex="-1" id="certificate_details_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Calibration Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <div class="response"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal search End -->
+ <!-- Modal calibration success model -->
+ <div class="modal" tabindex="-1" id="calibration_status_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Calibration Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <div class="response"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal calibration End -->
 </body>
 </html>

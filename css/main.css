@@ -61,7 +61,63 @@ div#office_address {
 img#loading_img {
     width: 80px !important;
 }
+.active{
+    display: block !important;
+}
+.diactivate{
+    display: none !important;
+}
+div#card {
+    min-height: 274px !important;
+    max-height: 274px !important;
+}
+form#calibration_form {
+    width: 100%!important;
+}
+form#calibration_form {
+    width: 100% !important;
+    background: beige!important;
+    padding: 30px!important;
+    border-radius: 8px!important;
+}
+div#calibration_form_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+form#calibration_form {
+    margin-bottom: 86px!important;
+}
+div#ser_form_renew {
+    display: flex !important;
+    justify-content: center!important;
+    margin-top: 35px!important;
+}
+form#add_product {
+    border: 1px solid chartreuse !important;
+    padding: 32px !important; 
+    margin-bottom: 74px !important;
+    margin-top: 15px !important;
+    border-radius: 6px !important;
+}
+table#list_table {
+    margin-bottom: 77px !important;
+}
+a#gtc {
+    margin-top: 9px !important;
+}
+form#calibration_edit_form {
+    border: 2px solid darkgray !important;
+    padding: 49px !important;
+    border-radius: 8px !important;
+}
+div#edit_btns {
+    margin-bottom: 27px!important;
+}
 @media screen and (max-width:650px){
+    form#calibration_form {
+        width: 100% !important;
+    }
     img#loading_img {
         width: 40px !important;
     }
