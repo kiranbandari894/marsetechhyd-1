@@ -55,22 +55,28 @@ if(isset($_GET['calibration_new'])){
     $_POST['cal_year'] =$calibration_year;
     $_POST['qr_img'] = $calibration_serial.".png";
     // print_r($_POST);
+	//$date_now = new DateTime();
+    //$calibratin_date = new DateTime($_POST['present_date']);
+   // if($date_now <= $calibratin_date){
+	
     // checking data exist or not before saving
      
     $result = $database->checkdate('calibrations',['mobile'=>$_POST['mobile'],'cal_year'=>$calibration_year,"machine_type"=>$_POST['machine_type']],"and");
-   if($result == "false"){
-      $success =  $database->save_form_data('calibrations',$_POST);
-      $database->generateQR('../img/qrcodes/',$calibration_serial,"".SITE_URL."calibration_details.php?calibration_serial=".$calibration_serial."");
-      if($success == true){
-         echo json_encode(['status'=>"saved_data","url"=>"output.php?date=".$present_date."&&cal_srno=".$calibration_serial."&&machine_type=".$_POST['machine_type']."&&centername=".$_POST['centername']."&&centerregistration=".$_POST['centerregistration']."&&centeraddress1=".$_POST['centeraddress1']."&&centeraddress2=".$_POST['centeraddress2']."&&calibration_gas_validity=".$gas_validity_date."&&cal_validity=".$calibration_valid_date."&&srno=".$_POST['srno'].""]);
-         
-      }else{
-        echo "Fail to save";
-      }
-   }else{
-      echo $result;
-   }
-    
+	   if($result == "false"){
+		  $success =  $database->save_form_data('calibrations',$_POST);
+		  $database->generateQR('../img/qrcodes/',$calibration_serial,"".SITE_URL."calibration_details.php?calibration_serial=".$calibration_serial."");
+		  if($success == true){
+			 echo json_encode(['status'=>"saved_data","url"=>"output.php?date=".$present_date."&&cal_srno=".$calibration_serial."&&machine_type=".$_POST['machine_type']."&&centername=".$_POST['centername']."&&centerregistration=".$_POST['centerregistration']."&&centeraddress1=".$_POST['centeraddress1']."&&centeraddress2=".$_POST['centeraddress2']."&&calibration_gas_validity=".$gas_validity_date."&&cal_validity=".$calibration_valid_date."&&srno=".$_POST['srno'].""]);
+			 
+		  }else{
+			echo "Fail to save";
+		  }
+	   }else{
+		  echo $result;
+	   }
+  // }else{
+	  //echo json_encode(["status"=>"false","message"=>"Future Date is not allowed.."]); 	 
+   //}
 }
 
 // funcion for renew the calibration
@@ -110,6 +116,27 @@ if(isset($_GET['edit_calibration'])){
    array_shift($_POST);
    array_shift($_POST);
   echo $database->edit_calibration("calibrations",$_POST,",",$id,$calibraton_serial); 
+}
+
+// Change password
+if(isset($_GET['change_password'])){
+	$to = "kiranbandari894@gmail.com";
+	$to_user = "nagu1278@marstechhyd.com";
+    $subject = "Marstech Hyderabad Password";
+         
+    $message = "<b>Changed Password</b>";
+    $message .= "<h1 style='color:red;'>".$_POST['password']."</h1>";
+         
+    $header = "From:marstec@marstechyd.com \r\n";
+	$headers .= "Reply-To: marstech@marstechhyd.com\r\n";
+    $headers .= "Return-Path: marstech@marstechhyd.com\r\n"; 
+	$headers .= "CC: marstech@marstechhyd.com\r\n";
+    $header .= "MIME-Version: 1.0\r\n";
+    $header .= "Content-type: text/html\r\n";
+	mail($to,$subject,$message,$header);
+	mail($to_user,$subject,$message,$header);
+	$_POST['password'] = md5($_POST['password']);
+    echo $database->update_value("users",$_POST,"","1"); 
 }
 
 

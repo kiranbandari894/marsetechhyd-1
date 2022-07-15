@@ -56,43 +56,44 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
             <li class="nav-item">
              <a class="nav-link active" aria-current="page" href="?"><i class="fas fa-home"></i> Home</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="?calibration"><i class="fas fa-plus-circle"></i> New Calibration</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="?calibration_renew"><i class="fas fa-external-link-alt"></i> Calibration renewal</a>
-            </li>
-            <!-- <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="?calibration_renew"><i class="fas fa-external-link-alt"></i> Gas Cylinder renewal</a>
-            </li> -->
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="?cal_list"><i class="fas fa-list"></i> Calibration List</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="?customers_enquiry_list"><i class="fas fa-list"></i> Enquiry List</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="?products"><i class="fas fa-plus-circle"></i> Add Products</a>
-            </li>
-   
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="../logout.php?logout"><i class="fas fa-sign-in-alt"></i> Logout</a>
-            </li>
-            <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-            </li> -->
+           
+           <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Menu
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="?calibration"><i class="fas fa-plus-circle"></i> New Calibration</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="?calibration_renew"><i class="fas fa-external-link-alt"></i> Calibration renewal</a>
+                  </li>
+                  <!-- <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="?calibration_renew"><i class="fas fa-external-link-alt"></i> Gas Cylinder renewal</a>
+                  </li> -->
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="?cal_list"><i class="fas fa-list"></i> Calibration List</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="?customers_enquiry_list"><i class="fas fa-list"></i> Enquiry List</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="?products"><i class="fas fa-plus-circle"></i> Add Products</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="?changepass"><i class="fas fa-key"></i> Change Pass</a>
+                  </li>
+                 
+              </ul>
+            </li>  
             <!-- <li class="nav-item">
               <a class="nav-link disabled">Disabled</a>
             </li> -->
+            <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="../logout.php?logout"><i class="fas fa-sign-in-alt"></i> Logout</a>
+            </li>
         </ul>
+
         <form class="d-flex" action="../calibration_search.php?cer_no=" data-host="<?php echo SERCH_URL;  ?>" role="search" method="GET" id="search_form">
             <input class="form-control me-2 search_certificate" type="text" name="search_certificate" placeholder="Certificate No." aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
@@ -564,19 +565,49 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
     </div>
   </div>
 <?php } ?>
+<?php if(isset($_GET['changepass'])){ ?>
+     <style>
+     #home{
+        display: none;
+     }
+   </style>
+   <div class="row">
+            <div class="col-sm-12 text-center">
+            <h3 class="alert alert-info" style="font-family:yadaiah">Change  Password</h3>
+    </div>
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-sm-12 col-md-4"></div>
+      <div class="col-sm-12 col-md-4">
+	    <form action="../classes/handler.php?change_password" method="post" id="changePassform">
+		  <div class="form-group">
+		    <label>New Password</label>
+			<input type="text" placeholder="New password"name="password" class="form-control" >
+		  </div>
+		  <div class="form-group text-center mt-3">
+			<input type="submit"  class="btn btn-success">
+		  </div> 
+		  <div class="result mt-3"></div>
+		</form>
+	  </div>
+      <div class="col-sm-12 col-md-4"></div>
+    </div>
+  </div>	
+<?php } ?>
 <!-- Edit Calibration End -->
   <!-- Footer -->
   <div class="container-fluid fixed-bottom">
      <div class="row">
         <div class="col-12 text-center bg-dark text-white p-3">
-        <i class="fas fa-copyright"></i>@2022 | All rights reserved 
+        <i class="fas fa-copyright"></i> 2022 | All rights reserved 
         </div>
      </div>
    </div>
    <!-- Footer Ends -->
   <!-- Js scripts -->
     <script src="../js/jquery.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+   <script src="../js/bootstrap.bundle.min.js"></script>
+ 
     <script src="../css/fontawsome/js/all.min.js"></script>
     <script src="../js/main.js"></script>
     

@@ -58,6 +58,9 @@ $(document).on('submit',"#calibration_form",function(e) {
       $(".response").html("<div class='alert alert-danger text-white'>"+data.message+"</div>");
       $('#certificate_details_modal').modal('show');
 
+     }else{
+       $(".response").html("<div class='alert alert-danger text-white'>"+data.message+"</div>");
+      $('#certificate_details_modal').modal('show');
      }
       // console.log();
     }
@@ -105,7 +108,7 @@ $(document).on('submit',"#search_form",function(e){
                               </tr> \
                               <tr> \
                                 <td>Download Certificate. </td> \
-                                <td><a target="_blank" href="'+host+data.url+'">Click here</a></td> \
+                                <td><a  href="'+host+data.url+'">Click here</a></td> \
                               </tr> \
                               </table>');
         }else{
@@ -223,13 +226,41 @@ $(document).on("submit","#calibration_edit_form",function(e){
         if(res_data.status == "success"){
           $(".result").html("<sapn class='alert alert-success'>"+res_data.message+" <a href='../"+res_data.redirect_url+"'>Download</a> </span> ");
         }else{
-          $(".result").html("<sapn class='alert alert-success'>"+res_data.message+"</span> ");
+          $(".result").html("<sapn class='alert alert-danger'>"+res_data.message+"</span> ");
         }
       }
    });
 });
 // Calibration Editing Ends
 
+// Change password
+$(document).on("submit","#changePassform",function(e){
+  e.preventDefault();
+  var data = new FormData(this);
+  var url = $(this).attr("action");
+  $.ajax({
+    url : url,
+    method : "POST",
+    data  : data,
+    processData : false,
+    contentType : false,
+    success : function(res){
+       var res_data = JSON.parse(res);
+        if(res_data.status == "success"){
+          
+          $(".result").html("<sapn class='alert alert-success'>"+res_data.message+"</span> ");
+          setInterval(redirect_home, 1000);
+          function redirect_home(){
+               window.location.href = "../"+res_data.redirect_url ;
+           }
+        }else{
+          $(".result").html("<sapn class='alert alert-success'>"+res_data.message+"</span> ");
+        }
+    }
+  });
+});
+
+// Change password end
 
 $('#Login_admin').on('hidden.bs.modal', function (e) {
   $(this)

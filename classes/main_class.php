@@ -347,6 +347,7 @@ public function edit_calibration($table,$data,$operator,$id,$calibration_serial)
             "status"=>"success",
             "message"=>"Successfully Modified...",
             "redirect_url" =>"calibration_details.php?calibration_serial=".$calibration_serial.""
+
         ]);
     }else{
         return json_encode([
@@ -355,6 +356,32 @@ public function edit_calibration($table,$data,$operator,$id,$calibration_serial)
         ]);
     }
 }
+// change password
+public function update_value($table,$data,$operator,$id){
+    
+    $new_values = [];
+    foreach($data as $key=>$val){
+        array_push($new_values,"$key='$val'");
+    }
+    $check_value = implode(" $operator ",$new_values);
+    $query = "UPDATE $table SET $check_value where id='".$id."'";
+    $run_que = mysqli_query($this->con,$query);
+	if($run_que){
+        return json_encode([
+            "status"=>"success",
+            "message"=>"Successfully Changed...",
+			"redirect_url" =>"logout.php?logout"
+        ]);
+    }else{
+        return json_encode([
+            "status"=>"fail",
+            "message"=>"Fail to change"
+        ]);
+    }
+}	
+	
+
+
 
    public function __destruct()
    {
