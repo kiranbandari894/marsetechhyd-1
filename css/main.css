@@ -106,13 +106,27 @@ table#list_table {
 a#gtc {
     margin-top: 9px !important;
 }
-form#calibration_edit_form {
+form#calibration_edit_form,form#training_edit_form,#amc_edit_form {
     border: 2px solid darkgray !important;
     padding: 49px !important;
     border-radius: 8px !important;
 }
 div#edit_btns {
     margin-bottom: 27px!important;
+}
+
+form#operator_form,form#new_amc_form {
+    background: aliceblue !important;
+    padding: 28px !important;
+    margin-bottom: 66px !important;
+}
+table#detials_table img{
+    width: 60px !important;
+
+}
+table#detials_table {
+    margin-bottom: 83px !important;
+    border: 1px solid aquamarine !important;
 }
 @media screen and (max-width:650px){
     form#calibration_form {

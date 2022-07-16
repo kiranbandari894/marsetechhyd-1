@@ -1,4 +1,5 @@
 <?php
+error_reporting(~E_ALL);
 date_default_timezone_set("Asia/kolkata");
 include_once('../constants.php');
 include_once('./main_class.php');
@@ -61,7 +62,7 @@ if(isset($_GET['calibration_new'])){
 	
     // checking data exist or not before saving
      
-    $result = $database->checkdate('calibrations',['mobile'=>$_POST['mobile'],'cal_year'=>$calibration_year,"machine_type"=>$_POST['machine_type']],"and");
+    $result = $database->checkdate('calibrations',['centerregistration'=>$_POST['centerregistration'],'cal_year'=>$calibration_year,"machine_type"=>$_POST['machine_type']],"and","calibration_serial");
 	   if($result == "false"){
 		  $success =  $database->save_form_data('calibrations',$_POST);
 		  $database->generateQR('../img/qrcodes/',$calibration_serial,"".SITE_URL."calibration_details.php?calibration_serial=".$calibration_serial."");
@@ -115,7 +116,26 @@ if(isset($_GET['edit_calibration'])){
    $calibraton_serial = $_POST['calibration_serial'];
    array_shift($_POST);
    array_shift($_POST);
-  echo $database->edit_calibration("calibrations",$_POST,",",$id,$calibraton_serial); 
+  echo $database->edit_calibration("calibrations",$_POST,",",$id,$calibraton_serial,"CAL"); 
+}
+
+// Edit training certificate Handler
+if(isset($_GET['edit_training_cert'])){
+  $id = $_POST['id'];
+  $training_cer_no = $_POST['training_cer_no'];
+  array_shift($_POST);
+  array_shift($_POST);
+  
+  echo $database->edit_calibration(" training_certificate",$_POST,",",$id,$training_cer_no,"TRIN"); 
+}
+
+// Edit AMC certificate Handler
+if(isset($_GET['edit_amc_cert'])){
+  $id = $_POST['id'];
+  $amc_cer_no = $_POST['amc_cer_no'];
+  array_shift($_POST);
+  array_shift($_POST);
+ echo $database->edit_calibration("amc",$_POST,",",$id,$amc_cer_no,"AMC"); 
 }
 
 // Change password
@@ -139,5 +159,83 @@ if(isset($_GET['change_password'])){
     echo $database->update_value("users",$_POST,"","1"); 
 }
 
+// trainer certificate 
+if(isset($_GET['create_operator'])){
+  $certificate_no = "MARS-TRAN-".date('dmYhis');
+  $certificate_issue_date = date('d-m-Y');
+  $profile_img = $_FILES['profpic']['name'];
+  $prpfile_tmp_name = $_FILES['profpic']['tmp_name'];
+  $_POST['training_cer_no'] = $certificate_no;
+  $_POST['certificate_issue_date'] = $certificate_issue_date;
+  $_POST['profimg'] = $profile_img;
+  $result = $database->checkdate('training_certificate',['mobile'=>$_POST['mobile']]," ","training_cer_no");
+  if($result == "false"){
+ 
+    $success =  $database->save_form_data('training_certificate',$_POST);
+    $database->generateQR('../img/qrcodes/',$_POST['training_cer_no'],"".SITE_URL."calibration_details.php?training_cer_no=".$_POST['training_cer_no']."");
+    if($success == true){
+      $directory = '../img/training_cer_img/';
+      $file_name = $directory.$profile_img;
+      if(move_uploaded_file($prpfile_tmp_name,$file_name)){
+        $res =  $database->compress_img($file_name,"400",$_FILES['profpic']['type']);
+        if($res = "success"){
+          echo json_encode(['status'=>"success","message"=>"successfully generated...","url"=>"../pdfs/training_cer.php?cer_date=".$_POST['certificate_issue_date']."&&training_cer_no=".$certificate_no."&&traineename=".$_POST['traineename']."&&centername=".$_POST['centername']."&&address1=".$_POST['address1']."&&address2=".$_POST['address2']."&&profimg=".$_POST['profimg'].""]);
+        }else{
+          echo json_encode(['status'=>"success","message"=>"successfully generated. but fail to compress Image","url"=>"../pdfs/training_cer.php?cer_date=".$_POST['certificate_issue_date']."&&training_cer_no=".$certificate_no."&&traineename=".$_POST['traineename']."&&centername=".$_POST['centername']."&&address1=".$_POST['address1']."&&address2=".$_POST['address2']."&&profimg=".$_POST['profimg'].""]);
+        }
+      }else{
+        echo json_encode(['status'=>"success","message"=>"successfully generated. But fail to upload Image..","url"=>"../pdfs/training_cer.php?cer_date=".$_POST['certificate_issue_date']."&&training_cer_no=".$certificate_no."&&traineename=".$_POST['traineename']."&&centername=".$_POST['centername']."&&address1=".$_POST['address1']."&&address2=".$_POST['address2']."&&profimg=".$_POST['profimg'].""]);
+      }
+      
+    }else{
+      echo json_encode(['status'=>"fail","message"=>"Fail to generate certificate.."]);
+    }
+  }else{
+ 
+    echo $result;
+  }
+ 
+}
+
+// AMC creation
+if(isset($_GET['create_amc'])){
+	
+     $_POST['amc_cer_no'] = "MARS-AMC-".date("dmYhis");
+    if(date('d') == "31"){
+      $_POST['certificate_issue_date'] = date("dS")." of ".date("M Y");
+    }else{
+      $_POST['certificate_issue_date'] = date("dS")." of ".date("M Y");
+    }
+    $certificate_valid_date = date_create(date("Y-m-d"));
+    date_add($certificate_valid_date,date_interval_create_from_date_string('1 year'));
+    date_sub($certificate_valid_date,date_interval_create_from_date_string('1 day'));
+    $certificate_valid_date =  date_format($certificate_valid_date,'dS')." of ".date_format($certificate_valid_date,'M Y');
+    $_POST['certificate_valid_date'] = $certificate_valid_date;
+  
+    $amc_year = date("Y")."-".(string)(((int)date("Y")) + 1) ;
+    $_POST['amc_year'] = $amc_year;
+      // adding date for calibration gas validity
+      $date1 = strtotime(date('Y-m-d'));
+      $date1 = date('Y-m-d',$date1);
+      $amc_date = date_create($date1);
+      date_add($amc_date,date_interval_create_from_date_string("365 days"));
+      date_sub($amc_date,date_interval_create_from_date_string('1 day')); 
+      $amc_validity = date_format($amc_date,"d-m-Y");
+      $_POST['issue_date'] = date('d-m-Y');
+      $_POST['valid_date'] = $amc_validity;
+    $result = $database->checkdate('amc',['centerregistration'=>$_POST['centerregistration'],"fueltype"=>$_POST['fueltype']],"and","amc_cer_no");
+    
+    if($result == "false"){
+      $success =  $database->save_form_data('amc',$_POST);
+      $database->generateQR('../img/qrcodes/',$_POST['amc_cer_no'],"".SITE_URL."calibration_details.php?amc_cer_no=".$_POST['amc_cer_no']."");
+      if($success == true){
+       
+        echo json_encode(['status'=>"success","message"=>"successfully generated...","url"=>"../pdfs/amc.php?cer_date=".$_POST['certificate_issue_date']."&& amc_cer_no=".$_POST['amc_cer_no']."&&ownername=".$_POST['ownername']."&&centername=".$_POST['centername']."&&address1=".$_POST['address1']."&&address2=".$_POST['address2']."&&fueltype=".$_POST['fueltype']."&&slno=".$_POST['slno']."&&certificate_valid_date=".$_POST['certificate_valid_date'].""]);
+       }
+    }else{
+      echo $result;
+    }
+	 
+}
 
 ?>

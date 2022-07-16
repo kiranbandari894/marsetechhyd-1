@@ -5,6 +5,7 @@ include_once('./constants.php');
 $obj = new marsetech(HOST,USER,PASS,DB);
 if(isset($_GET['calibration_serial'])){
 $details = $obj->getDetails('calibrations',$_GET," ");
+
 // To checking Expiry dates
 $expiry = null;
 $expiry1 = null;
@@ -64,7 +65,7 @@ $expiry1 =  'Yes';
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-             <a class="nav-link active" aria-current="page" href="./"><i class="fas fa-home"></i> Home</a>
+             <a class="nav-link active" aria-current="page" href="./admin"><i class="fas fa-home"></i> Home</a>
             </li>
            
             <!-- <li class="nav-item dropdown">
@@ -172,6 +173,316 @@ $expiry1 =  'Yes';
 </html>
 
   <?php 
+}elseif(isset($_GET['training_cer_no'])){
+
+  $training_details = $obj->getDetails('training_certificate',$_GET," ");
+  ?>
+<!-- Teaining certificate details -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marse Technologies Hyderabad</title>
+    <!-- Style Sheets  -->
+  
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/Fontscustom/style.css">
+    <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/fontawsome/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+        <!-- Style Sheets  End -->
+</head>
+<body>
+  
+    <header class="desktop-logo">
+      <div class="container-fluid">
+         <div class="row pt-2 pb-2">
+         <div class="item item-logo col-3 pl-3">
+          <a class="navbar-brand" href="#"><img src="img/logo.png" alt=""></a>
+        </div>
+        <div class="item item-heading col-9">
+            <h1 style="font-family:krishika;color:blue;font-size:18px;">MARS Technologies Inc</h1>
+        </div>
+         </div>
+      </div>
+    </header> 
+   
+   <!-- Navigation Menu -->
+   <nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand mobile-logo" href="#"><img src="img/logo.png" alt=""></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+             <a class="nav-link active" aria-current="page" href="./admin"><i class="fas fa-home"></i> Home</a>
+            </li>
+           
+            <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+            </li> -->
+            <!-- <li class="nav-item">
+              <a class="nav-link disabled">Disabled</a>
+            </li> -->
+        </ul>
+        <form class="d-flex" action="./calibration_search.php?cer_no=" data-host="<?php echo SERCH_URL;  ?>" role="search" method="GET" id="search_form">
+            <input class="form-control me-2 search_certificate" type="text" name="search_certificate" placeholder="Certificate No." aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        </div>
+    </div>
+    </nav>
+   <!-- Navigation Menu End -->
+     <div class="container">
+     <div class="row">
+            <div class="col-sm-12 text-center">
+            <h3 class="alert alert-info" style="font-family:yadaiah">Training Certificate Details</h3>
+    </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-2 col-lg-2"></div>
+            <div class="col-sm-12 col-md-8 col-lg-8">
+     <?php   if($training_details != "false"){  ?>           
+            <table class="table table-striped mt-5" id="detials_table">
+                              <tr>  
+                                <td>Certificate No. </td> 
+                                <td><?php echo $training_details[0]['training_cer_no']; ?></td> 
+                              </tr>
+                              <tr>  
+                                <td>Certificate issue Date. </td> 
+                                <td><?php echo $training_details[0]['certificate_issue_date']; ?></td> 
+                              </tr> 
+                              <tr> 
+                                <td>Image </td>
+                                <td><img src="./img/training_cer_img/<?php echo $training_details[0]['profimg']; ?>" alt=""></td> 
+                              </tr>
+                              <tr> 
+                                <td>Operator Name </td>
+                                <td><?php echo $training_details[0]['traineename']; ?></td> 
+                              </tr> 
+                              <tr> 
+                                <td>Mobile No. </td>
+                                <td><?php echo $training_details[0]['mobile']; ?></td> 
+                              </tr>
+                              <tr>
+                                <td>Download Certificate. </td>
+                                <td><a target="_blank" href="<?php echo SERCH_URL."training_cer.php?cer_date=".$training_details[0]['certificate_issue_date']."&&centername=".$training_details[0]['centername']."&&training_cer_no=".$training_details[0]['training_cer_no']."&&centername=".$training_details[0]['centername']."&&address1=".$training_details[0]['address1']."&&address2=".$training_details[0]['address2']."&&profimg=".$training_details[0]['profimg']."&&traineename=".$training_details[0]['traineename'];  ?>">Click here</a></td>
+                              </tr>
+    </table>
+    <?php  } ?>
+            </div>
+            <div class="col-sm-12 col-md-2 col-lg-2"></div>
+        </div>
+     </div>
+   <div class="container-fluid fixed-bottom">
+     <div class="row">
+        <div class="col-12 text-center bg-dark text-white p-3">
+        <i class="fas fa-copyright"></i> All rights reserved @2022
+        </div>
+     </div>
+   </div>
+    
+  <!-- Js scripts -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./css/fontawsome/js/all.min.js"></script>
+    <script src="./js/main.js"></script>
+    
+  <!-- Js scripts End-->
+ <!-- Modal search -->
+ <div class="modal" tabindex="-1" id="certificate_details_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Calibration Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <div class="response"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal search End -->
+</body>
+</html>
+
+
+<?php  
+}elseif(isset($_GET['amc_cer_no'])){
+  $amc_details = $obj->getDetails('amc',$_GET," ");
+?>
+
+<!-- Teaining certificate details -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marse Technologies Hyderabad</title>
+    <!-- Style Sheets  -->
+  
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/Fontscustom/style.css">
+    <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/fontawsome/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+        <!-- Style Sheets  End -->
+</head>
+<body>
+  
+    <header class="desktop-logo">
+      <div class="container-fluid">
+         <div class="row pt-2 pb-2">
+         <div class="item item-logo col-3 pl-3">
+          <a class="navbar-brand" href="#"><img src="img/logo.png" alt=""></a>
+        </div>
+        <div class="item item-heading col-9">
+            <h1 style="font-family:krishika;color:blue;font-size:18px;">MARS Technologies Inc</h1>
+        </div>
+         </div>
+      </div>
+    </header> 
+   
+   <!-- Navigation Menu -->
+   <nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand mobile-logo" href="#"><img src="img/logo.png" alt=""></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+           <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+             <a class="nav-link active" aria-current="page" href="./admin"><i class="fas fa-home"></i> Home</a>
+            </li>
+           
+            <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+            </li> -->
+            <!-- <li class="nav-item">
+              <a class="nav-link disabled">Disabled</a>
+            </li> -->
+        </ul>
+        <form class="d-flex" action="./calibration_search.php?cer_no=" data-host="<?php echo SERCH_URL;  ?>" role="search" method="GET" id="search_form">
+            <input class="form-control me-2 search_certificate" type="text" name="search_certificate" placeholder="Certificate No." aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        </div>
+    </div>
+    </nav>
+   <!-- Navigation Menu End -->
+     <div class="container">
+     <div class="row">
+            <div class="col-sm-12 text-center">
+            <h3 class="alert alert-info" style="font-family:yadaiah">Training Certificate Details</h3>
+    </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-2 col-lg-2"></div>
+            <div class="col-sm-12 col-md-8 col-lg-8">
+     <?php   if($training_details != "false"){  ?>           
+            <table class="table table-striped mt-5" id="detials_table">
+                              <tr>  
+                                <td>Certificate issue Date. </td> 
+                                <td><?php echo $amc_details[0]['certificate_issue_date']; ?></td> 
+                              </tr> 
+                              <tr> 
+                                <td>Owner Name </td>
+                                <td><?php echo $amc_details[0]['ownername']; ?></td> 
+                              </tr> 
+                              <tr> 
+                                <td>Mobile No. </td>
+                                <td><?php echo $amc_details[0]['mobile']; ?></td> 
+                              </tr>
+                              <tr> 
+                                <td>Center Name </td>
+                                <td><?php echo $amc_details[0]['centername']; ?></td> 
+                              </tr>
+                              <tr> 
+                                <td>Fuel Type </td>
+                                <td><?php echo $amc_details[0]['fueltype']; ?></td> 
+                              </tr>
+                              <tr> 
+                                <td>Slno </td>
+                                <td><?php echo $amc_details[0]['slno']; ?></td> 
+                              </tr>
+                              <tr> 
+                                <td>Address </td>
+                                <td><?php echo $amc_details[0]['address1']; ?> <?php echo $amc_details[0]['address2'];  ?></td> 
+                              </tr>
+                              <tr>
+                                <td>Download Certificate. </td>
+                                <td><a target="_blank" href="<?php echo SERCH_URL."amc.php?cer_date=".$amc_details[0]['certificate_issue_date']."&&certificate_valid_date=".$amc_details[0]['certificate_valid_date']."&&amc_cer_no=".$amc_details[0]['amc_cer_no']."&&centername=".$amc_details[0]['centername']."&&address1=".$amc_details[0]['address1']."&&address2=".$amc_details[0]['address2']."&&fueltype=".$amc_details[0]['fueltype']."&&ownername=".$amc_details[0]['ownername']."&&slno=".$amc_details[0]['slno'];  ?>">Click here</a></td>
+                              </tr>
+    </table>
+    <?php  } ?>
+            </div>
+            <div class="col-sm-12 col-md-2 col-lg-2"></div>
+        </div>
+     </div>
+   <div class="container-fluid fixed-bottom">
+     <div class="row">
+        <div class="col-12 text-center bg-dark text-white p-3">
+        <i class="fas fa-copyright"></i> All rights reserved @2022
+        </div>
+     </div>
+   </div>
+    
+  <!-- Js scripts -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./css/fontawsome/js/all.min.js"></script>
+    <script src="./js/main.js"></script>
+    
+  <!-- Js scripts End-->
+ <!-- Modal search -->
+ <div class="modal" tabindex="-1" id="certificate_details_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">AMC Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+         <div class="response"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal search End -->
+</body>
+</html>
+
+
+<?php
 }
 ?>
 

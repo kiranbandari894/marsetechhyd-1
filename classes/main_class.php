@@ -31,10 +31,15 @@ class marsetech{
         }
     }
 // public function whether exist or not
-public function checkdate($table,$data,$operator){
+public function checkdate($table,$data,$operator,$certificatekey){
     $new_values = [];
     foreach($data as $key=>$val){
         array_push($new_values,"$key='$val'");
+    }
+    if($certificatekey == "training_cer_no"){
+        $mesg = "Training Certificate";
+    }else{
+        $mesg = "Calibration Certificate";
     }
     $check_value = implode(" $operator ",$new_values);
     
@@ -42,10 +47,27 @@ public function checkdate($table,$data,$operator){
     $run_que = mysqli_query($this->con,$query);
     if(mysqli_num_rows($run_que) > 0){
         if($res = mysqli_fetch_array($run_que)){
-            return json_encode([
+            if($certificatekey == "training_cer_no"){
+                return json_encode([
                     "status"=>"exist",
-                    "message"=>"Calibration already exist with Calibration No.  ".$res['calibration_serial']
+                    "message"=> "already exist",
+                    "url"=>  "../pdfs/training_cer.php?cer_date=".$res['certificate_issue_date']."&&training_cer_no=".$res['training_cer_no']."&&traineename=".$res['traineename']."&&centername=".$res['centername']."&&address1=".$res['address1']."&&address2=".$res['address2']."&&profimg=".$res['profimg'].""
                 ]);
+            }elseif($certificatekey == "amc_cer_no"){
+                return json_encode([
+                    "status"=>"exist",
+                    "message"=> "already exist",
+                    "url"=>  "../pdfs/amc.php?cer_date=".$res['certificate_issue_date']."&&certificate_valid_date=".$res['certificate_valid_date']."&&ownername=".$res['ownername']."&&centername=".$res['centername']."&&address1=".$res['address1']."&&address2=".$res['address2']."&&mobile=".$res['mobile']."&&fueltype=".$res['fueltype']."&&amc_cer_no=".$res['amc_cer_no']."&&slno=".$res['slno']."&&certificate_valid_date=".$_POST['certificate_valid_date'].""
+                ]);
+            }
+            else{
+                return json_encode([
+                    "status"=>"exist",
+                    "message"=> "already exist",
+                    "url"=>"output.php?date=".$res['present_date']."&&cal_srno=".$res['calibration_serial']."&&machine_type=".$res['machine_type']."&&centername=".$res['centername']."&&centerregistration=".$res['centerregistration']."&&centeraddress1=".$res['centeraddress1']."&&centeraddress2=".$res['centeraddress2']."&&calibration_gas_validity=".$res['gas_valid_date']."&&cal_validity=".$res['calibration_validity_date']."&&srno=".$res['srno'].""
+                ]);
+            }
+            
         }
     }else{
         return "false";
@@ -53,7 +75,7 @@ public function checkdate($table,$data,$operator){
 }
 
 // Search certificate
-public function search_cer($table,$certificateno,$operator){
+public function search_cer($table,$certificateno,$operator,$search_type){
     $new_values = [];
     foreach($certificateno as $key=>$val){
         array_push($new_values,"$key='$val'");
@@ -64,6 +86,8 @@ public function search_cer($table,$certificateno,$operator){
     $run_que = mysqli_query($this->con,$query);
     if(mysqli_num_rows($run_que) > 0){
         if($res = mysqli_fetch_array($run_que)){
+           if($search_type == "CAL"){
+
             $expiry = null;
             $expiry1 = null;
             $date_now = new DateTime();
@@ -83,6 +107,7 @@ public function search_cer($table,$certificateno,$operator){
             }
             return json_encode([
                     "status"=>"exist",
+                    "certificat_type"=>"CAL",
                     "calib_date"=>$res['present_date'],
                     "message"=>$res['calibration_serial'],
                     "Cal_validity"=>$res['calibration_validity_date'],
@@ -92,6 +117,35 @@ public function search_cer($table,$certificateno,$operator){
                     "url"=>"output.php?date=".$res['present_date']."&&cal_srno=".$res['calibration_serial']."&&machine_type=".$res['machine_type']."&&centername=".$res['centername']."&&centeraddress1=".$res['centeraddress1']."&&centerregistration=".$res['centerregistration']."&&centeraddress2=".$res['centeraddress2']."&&calibration_gas_validity=".$res['gas_valid_date']."&&cal_validity=".$res['calibration_validity_date']."&&srno=".$res['srno'].""
 
                 ]);
+
+           }elseif($search_type == "TRAN"){
+            return json_encode([
+                "status"=>"exist",
+                "certificat_type"=>"TRAN",
+                "certificate_issue_date"=>$res['certificate_issue_date'],
+                "training_cer_no"=>$res['training_cer_no'],
+                "traineename"=>$res['traineename'],
+                "centername"=>$res['centername'],
+                "profimg"=>$res['profimg'],
+                "url"=>  "../pdfs/training_cer.php?cer_date=".$res['certificate_issue_date']."&&training_cer_no=".$res['training_cer_no']."&&traineename=".$res['traineename']."&&centername=".$res['centername']."&&address1=".$res['address1']."&&address2=".$res['address2']."&&profimg=".$res['profimg'].""
+
+            ]);
+
+           }elseif($search_type == "AMC"){
+                return json_encode([
+                    "status"=>"exist",
+                    "certificat_type"=>"AMC",
+                    "certificate_issue_date"=>$res['certificate_issue_date'],
+                    "amc_cer_no"=>$res['amc_cer_no'],
+                    "ownername"=>$res['ownername'],
+                    "centername"=>$res['centername'],
+                    "certificate_valid_date"=>$res['certificate_valid_date'],
+                    "fueltype"=>$res['fueltype'],
+                    "slno"=>$res['slno'],
+                    "url"=>  "../pdfs/amc.php?cer_date=".$res['certificate_issue_date']."&&amc_cer_no=".$res['amc_cer_no']."&&ownername=".$res['ownername']."&&centername=".$res['centername']."&&address1=".$res['address1']."&&address2=".$res['address2']."&&slno=".$res['slno']."&&fueltype=".$res['fueltype']."&&certificate_valid_date=".$res['certificate_valid_date'].""
+                ]);
+           } 
+            
         }
     }else{
         return json_encode(['status'=>"false","message"=>"No records found.."]);
@@ -333,7 +387,7 @@ public function count_rows($table){
 
 
 // function for Editing the Calibration
-public function edit_calibration($table,$data,$operator,$id,$calibration_serial){
+public function edit_calibration($table,$data,$operator,$id,$calibration_serial,$type){
     
     $new_values = [];
     foreach($data as $key=>$val){
@@ -343,10 +397,19 @@ public function edit_calibration($table,$data,$operator,$id,$calibration_serial)
     $query = "UPDATE $table SET $check_value where id='".$id."'";
     $run_que = mysqli_query($this->con,$query);
     if($run_que){
+        if($type == "CAL"){
+            $url = "calibration_details.php?calibration_serial=".$calibration_serial."";
+        }elseif($type == "TRIN"){
+            $url = "calibration_details.php?training_cer_no=".$calibration_serial."";
+        }elseif($type == "AMC"){
+            $url = "calibration_details.php?amc_cer_no=".$calibration_serial."";
+        }else{
+            $url ="";
+        }
         return json_encode([
             "status"=>"success",
             "message"=>"Successfully Modified...",
-            "redirect_url" =>"calibration_details.php?calibration_serial=".$calibration_serial.""
+            "redirect_url" => $url
 
         ]);
     }else{
