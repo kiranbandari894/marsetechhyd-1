@@ -86,17 +86,17 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                     <a class="nav-link active" aria-current="page" href="?products"><i class="fas fa-plus-circle"></i> Add Products</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="?amc"><i class="fas fa-key"></i> AMC </a>
+                    <a class="nav-link active" aria-current="page" href="?amc"><i class="fas fa-certificate"></i> AMC </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="?amc_cert_list_expiry"><i class="fas fa-key"></i> AMC's list</a>
+                    <a class="nav-link active" aria-current="page" href="?amc_cert_list_expiry"><i class="fas fa-list"></i> AMC's list</a>
                   </li>
                   
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="?operator_cer"><i class="fas fa-key"></i> Operator Certificate </a>
+                    <a class="nav-link active" aria-current="page" href="?operator_cer"><i class="fas fa-certificate"> </i>Operator Certificate </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="?training_cert_list"><i class="fas fa-key"></i> Operators Certificates List </a>
+                    <a class="nav-link active" aria-current="page" href="?training_cert_list"><i class="fas fa-list"></i> Operators Certificates List </a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="?changepass"><i class="fas fa-key"></i> Change Pass</a>
@@ -175,7 +175,7 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                         <li class="list-group-item">Total Certificates : <b> <?php echo $count_amc_cert; ?></b></li>
                     </ul>
                     <div class="card-body">
-                    <a href="?amc_cert_list" class="btn btn-success">Go to list</a>
+                    <a href="?amc_cert_list_expiry" class="btn btn-success">Go to list</a>
                     <a href="?amc" class="btn btn-primary">New Certificate</a>
                     
                     </div>
@@ -429,8 +429,24 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
   $slno = 0;  
   foreach($calibratio_list as $calibration){  
     $date_now = new DateTime();
-    $calibratin_date = new DateTime($calibration['calibration_validity_date']);
-    $calibratin_date1 = new DateTime($calibration['gas_valid_date']);
+    // calibration renew date
+    $cal_renew = strtotime($calibration['calibration_validity_date']);
+    $cal_date = date("Y-m-d",$cal_renew);
+    $new_calrenew_date = date_create($cal_date);
+    
+    date_sub($new_calrenew_date,date_interval_create_from_date_string("9 days"));
+    $new_calrenew_date =  date_format($new_calrenew_date,"d-m-Y");
+    
+    // gas_cylinder clibration renew date
+     $gasval_renew = strtotime($calibration['gas_valid_date']);
+    $gasrenew_date = date("Y-m-d",$gasval_renew);
+    $new_gasrenew_date = date_create($gasrenew_date);
+   
+    date_sub($new_gasrenew_date,date_interval_create_from_date_string("9 days"));
+    $new_gasrenew_date =  date_format($new_gasrenew_date,"d-m-Y");
+   
+    $calibratin_date = new DateTime($new_calrenew_date);
+    $calibratin_date1 = new DateTime($new_gasrenew_date);
     if($date_now > $calibratin_date) {
        $calib_expired[] = $calibration;
     }
@@ -457,7 +473,9 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
 <div class="container">
   <div class="row">
     <div class="col-sm-12 col-md-1"></div>
-    <div class="col-sm-12 col-md-10">
+    <div class="col-sm-12 col-md-10 col-lg-12">
+      <div class="row">
+      <div class="col-sm-12 col-md-12">
       <!-- Calibration Expires Ends -->
       <h2 class="text-danger">Calibration Expired:</h2>
       <div class="table-responsive-lg table-responsive-sm table-responsive-md p-1">
@@ -501,16 +519,21 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                     ?>
                 </td>
                
-                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+918074765166?text=Hi, <?php echo " ".$calibration['centername']." "; ?> Your Calibration has Expired.Please Renew it....Thankyou."><i class="fab fa-whatsapp"></i></a></td>
-                <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $calibration['id']; ?>&&srno=<?php echo $calibration['srno']; ?>&&calibration_serial=<?php echo $calibration['calibration_serial']; ?>&&centername=<?php echo $calibration['centername']; ?>&&centerregistration=<?php echo $calibration['centerregistration']; ?>&&centeraddress1=<?php echo $calibration['centeraddress1'];  ?>&&centeraddress2=<?php echo $calibration['centeraddress2'];  ?>&&gas_valid_date=<?php echo $calibration['gas_valid_date'];  ?>&&mobile=<?php echo $calibration['mobile'];  ?>"><i class="fas fa-edit"></i></a></td>
+                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+91<?php echo $calib_cert['mobile']; ?>?text=Hi, <?php echo " ".$calib_cert['centername']." "; ?> Your Calibration has Expired.Certificate No. <?php echo $calib_cert['calibration_serial']; ?>.Please Renew it....Thankyou. -MARS Technologies Inc."><i class="fab fa-whatsapp"></i></a></td>
+                <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $$calib_cert['id']; ?>&&srno=<?php echo $calib_cert['srno']; ?>&&calibration_serial=<?php echo $calib_cert['calibration_serial']; ?>&&centername=<?php echo $calib_cert['centername']; ?>&&centerregistration=<?php echo $calib_cert['centerregistration']; ?>&&centeraddress1=<?php echo $calib_cert['centeraddress1'];  ?>&&centeraddress2=<?php echo $calib_cert['centeraddress2'];  ?>&&gas_valid_date=<?php echo $calib_cert['gas_valid_date'];  ?>&&mobile=<?php echo $calib_cert['mobile'];  ?>"><i class="fas fa-edit"></i></a></td>
               </tr>
               
         <?php } ?>
     </table>
-  </div> 
-
+   </div> 
+  </div>
+  </div>
   <!--Calibration  Expired End -->
   <!-- Gas cylinder expired Expired -->
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+
+    
   <h2 class="text-danger">Gas Cylinder Expired:</h2>
       <div class="table-responsive-lg table-responsive-sm table-responsive-md p-1">
       <table class="table table-striped table-responsive table-bordered "  id="list_table">
@@ -547,34 +570,44 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                     ?>
                 </td>
                
-                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+918074765166?text=Hi, <?php echo " ".$gas_cert['centername']." "; ?> Your Gas Cylinder Calibration has Expired.Please Renew it....Thankyou."><i class="fab fa-whatsapp"></i></a></td>
+                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+91<?php echo $gas_cert['mobile']; ?>?text=Hi, <?php echo " ".$gas_cert['centername']." "; ?> Your Gas Cylinder Calibration has Expired Certificate No. <?php echo $gas_cert['calibration_serial']; ?>.Please Renew it....Thankyou.  -MARS Technologies Inc."><i class="fab fa-whatsapp"></i></a></td>
                 <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $gas_cert['id']; ?>&&srno=<?php echo $gas_cert['srno']; ?>&&calibration_serial=<?php echo $gas_cert['calibration_serial']; ?>&&centername=<?php echo $gas_cert['centername']; ?>&&centerregistration=<?php echo $gas_cert['centerregistration']; ?>&&centeraddress1=<?php echo $gas_cert['centeraddress1'];  ?>&&centeraddress2=<?php echo $gas_cert['centeraddress2'];  ?>&&gas_valid_date=<?php echo $gas_cert['gas_valid_date'];  ?>&&mobile=<?php echo $gas_cert['mobile'];  ?>"><i class="fas fa-edit"></i></a></td>
               </tr>
               
         <?php } ?>
     </table>
   </div> 
+  </div>
+  </div>
 <!-- Gas Cylinder Expired Ends -->
 <!-- Notexpired Expired -->
+<div class="row">
+  <div class="col-sm-12 col-md-12">
 <h2 class="text-danger">Calibrations Not  Expired:</h2>
       <div class="table-responsive-lg table-responsive-sm table-responsive-md p-1">
-      <table class="table table-striped table-responsive table-bordered "  id="list_table">
-        <th>Sl No.</th>
-        <th>Certificate No.</th>
-        <th>Center_Name.</th>
-        <th>Machine_Type</th>
-        <th>Machine_SrNo.</th>
-        <th>Mobile_No.</th>
-        <th>validity</th>
-        <th>Gas_Cylinder_validity</th>
-        <th>Calibration_Validity</th>
-        <th>whatsapp</th>
-        <th>Edit</th>
+      <table class="table table-striped  table-bordered "  id="list_table">
+        <tr>
+          <th>Sl No.</th>
+          <th>Certificate No.</th>
+          <th>Center_Name.</th>
+          <th>Machine_Type</th>
+          <th>Machine_SrNo.</th>
+          <th>Mobile_No.</th>
+          <th>validity</th>
+          <th>Gas_Cylinder_validity</th>
+          <th>Calibration_Validity</th>
+          <th>whatsapp</th>
+          <th>Edit</th>
+          <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?>  
+          <th>Delete</th>
+          <?php  } ?>
+        </tr>
 
         <?php $slno = 0; foreach($not_expired as $not_expire){ 
            if($slno == 0){
             $slno = 1;
           }
+          $url = SITE_URL."calibration_details.php?calibration_serial=".$not_expire['calibration_serial'];
           ?>
           
           <tr>
@@ -585,29 +618,21 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                 <td><?php echo $not_expire['srno']; ?></td>
                 <td><?php echo $not_expire['mobile']; ?></td>
                 <td><?php echo $not_expire['calibration_validity_date']; ?></td>
-                <td>
-                   <?php 
-                       
-                          echo  "<b class='text-success'>Not Expired </b>";
-                        
-                        
-                    ?>
+                <td><b class='text-success'>Not Expired </b>"
                 </td>
-                <td>
-                   <?php 
-                       
-                          echo  "<b class='text-success'>Not Expired </b>";
-                        
-                        
-                    ?>
-                </td>
-                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+918074765166?text=Hi, <?php echo " ".$calibration['centername']." "; ?> Your Calibration has Expired.Please Renew it....Thankyou."><i class="fab fa-whatsapp"></i></a></td>
+                <td><b class='text-success'>Not Expired </b></td>
+                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+91<?php echo $not_expire['mobile']; ?>?text=Hi, <?php echo " ".$not_expire['centername']." "; ?> Your Calibration Has done successfully. Certificate No. <?php echo $not_expire['calibration_serial']; ?> for Your Reference Download Link :<?php echo $url;  ?>  .Thankyou...MARS Technologies Inc."> <i class="fab fa-whatsapp"></i> </a></td>
                 <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $not_expire['id']; ?>&&srno=<?php echo $not_expire['srno']; ?>&&calibration_serial=<?php echo $not_expire['calibration_serial']; ?>&&centername=<?php echo $not_expire['centername']; ?>&&centerregistration=<?php echo $not_expire['centerregistration']; ?>&&centeraddress1=<?php echo $not_expire['centeraddress1'];  ?>&&centeraddress2=<?php echo $not_expire['centeraddress2'];  ?>&&gas_valid_date=<?php echo $not_expire['gas_valid_date'];  ?>&&mobile=<?php echo $not_expire['mobile'];  ?>"><i class="fas fa-edit"></i></a></td>
-              </tr>
+              <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?>  
+                   <td class="text-center"><a class="text-danger" style="font-size:32px;" id="d_delete" href="../classes/handler.php?delete=<?php echo $not_expire['calibration_serial']; ?>&&id=<?php echo $not_expire['id']; ?>&&table=calibrations" ><i class="fas fa-trash-alt"></i></a></td>
+              <?php  } ?>
+             </tr>
               
         <?php } ?>
     </table>
   </div> 
+  </div>
+</div>
 <!-- Not Expired Ends -->
     </div>
     <div class="col-sm-12 col-md-1"></div>
@@ -626,7 +651,15 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
   $slno = 0;  
   foreach($amc_cert_list as $amc){  
     $date_now = new DateTime();
-    $amc_date = new DateTime($amc['valid_date']);
+
+    $amc_strtotime = strtotime($amc['valid_date']);
+    $renew_amc = date("Y-m-d",$amc_strtotime);
+    $renuwAmc = date_create($renew_amc);
+ 
+    date_sub($renuwAmc,date_interval_create_from_date_string("9 days"));
+    $renuwAmc = date_format($renuwAmc,"d-m-Y");
+ 
+    $amc_date = new DateTime($renuwAmc);
    
     if($date_now > $amc_date) {
        $amc_expired[] = $amc;
@@ -645,7 +678,7 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
    </style>
    <div class="row">
             <div class="col-sm-12 text-center">
-            <h3 class="alert alert-info" style="font-family:yadaiah">Calibrations  List</h3>
+            <h3 class="alert alert-info" style="font-family:yadaiah">AMC  List</h3>
             </div>
     </div>
 
@@ -681,7 +714,7 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                 <td><?php echo $amc_cert['ownername']; ?></td>
                 <td><?php echo $amc_cert['centername']; ?></td>
                 <td><?php echo $amc_cert['fueltype']; ?></td>
-                <td><?php echo $amc_cert['srno']; ?></td>
+                <td><?php echo $amc_cert['slno']; ?></td>
                 <td><?php echo $amc_cert['mobile']; ?></td>
                 <td><?php echo $amc_cert['certificate_valid_date']; ?></td>
                 <td>
@@ -698,7 +731,7 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                     ?>
                 </td>
                
-                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+918074765166?text=Hi, <?php echo " ".$amc_cert['centername']." "; ?> Your Calibration has Expired.Please Renew it....Thankyou."><i class="fab fa-whatsapp"></i></a></td>
+                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+91<?php echo $amc_cert['mobile']; ?>?text=Hi, <?php echo " ".$amc_cert['centername']." "; ?> Your AMC has Expired.Please Renew it....Thankyou."><i class="fab fa-whatsapp"></i></a></td>
                 <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $amc_cert['id']; ?>&&amc_cer_no=<?php echo $amc_cert['amc_cer_no']; ?>&&centername=<?php echo $amc_cert['centername']; ?>&&mobile=<?php echo $amc_cert['mobile']; ?>&&address1=<?php echo $amc_cert['address1']; ?>&&address2=<?php echo $amc_cert['address2']; ?>&&ownername=<?php echo $amc_cert['ownername']; ?>&&slno=<?php echo $amc_cert['slno']; ?>&&certificate_issue_date=<?php echo $amc_cert['certificate_issue_date']; ?>&&certificate_valid_date=<?php echo $amc_cert['certificate_valid_date']; ?>&&fueltype=<?php echo $amc_cert['fueltype']; ?>"><i class="fas fa-edit"></i></a></td>
               </tr>
               
@@ -708,7 +741,7 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
 
   <!--AMC  Expired End -->
    
-  <!-- AMC Expires  -->
+  <!-- AMC not Expires  -->
   <h2 class="text-danger">AMC Not Expired:</h2>
       <div class="table-responsive-lg table-responsive-sm table-responsive-md p-1">
       <table class="table table-striped table-responsive table-bordered "  id="list_table">
@@ -722,11 +755,14 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
         <th>validity</th>
         <th>Expired status</th>
         <th>Edit</th>
-
+        <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?>  
+              <th>Delete</th>
+         <?php  } ?> 
         <?php $slno = 0; foreach($not_expired as $amc_cert){ 
            if($slno == 0){
             $slno = 1;
           }
+          $url = SITE_URL."calibration_details.php?amc_cer_no=".$amc_cert['amc_cer_no'];
           ?>
           
           <tr>
@@ -752,15 +788,18 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                     ?>
                 </td>  
                
-            
+                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+91<?php echo $amc_cert['mobile']; ?>?text=Hi, <?php echo " ".$amc_cert['centername']." "; ?> Your AMC Has done successfully. Certificate No.<?php echo " ".$amc_cert['calibration_serial']." "; ?> for Your Reference Download Link: <?php echo $url; ?>   .  Thankyou...MARS Technologies Inc."><i class="fab fa-whatsapp"></i></a></td>
                 <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $amc_cert['id']; ?>&&amc_cer_no=<?php echo $amc_cert['amc_cer_no']; ?>&&centername=<?php echo $amc_cert['centername']; ?>&&mobile=<?php echo $amc_cert['mobile']; ?>&&address1=<?php echo $amc_cert['address1']; ?>&&address2=<?php echo $amc_cert['address2']; ?>&&ownername=<?php echo $amc_cert['ownername']; ?>&&slno=<?php echo $amc_cert['slno']; ?>&&certificate_issue_date=<?php echo $amc_cert['certificate_issue_date']; ?>&&certificate_valid_date=<?php echo $amc_cert['certificate_valid_date']; ?>&&fueltype=<?php echo $amc_cert['fueltype']; ?>"><i class="fas fa-edit"></i></a></td>
+                <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?>  
+                   <td class="text-center"><a class="text-danger" style="font-size:32px;" id="d_delete" href="../classes/handler.php?delete=<?php echo $amc['id']; ?>&&id=<?php echo $amc['id']; ?>&&table=amc" ><i class="fas fa-trash-alt"></i></a></td>
+                 <?php  } ?> 
               </tr>
               
         <?php } ?>
     </table>
   </div> 
 
-  <!--AMC  Expired End -->
+  <!--AMC not Expired End -->
     </div>
     <div class="col-sm-12 col-md-1"></div>
   </div>
@@ -818,7 +857,9 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
    <?php  }  ?> 
 <!-- Enquiry list Ends -->
 <!-- Training certificates List -->
-<?php if(isset($_GET['training_cert_list'])){ ?>
+<?php if(isset($_GET['training_cert_list'])){
+
+?>
   <style>
      #home{
         display: none;
@@ -836,23 +877,34 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
           <div class="table-responsive-lg table-responsive-sm table-responsive-md p-1">
             <table class="table table-striped table-responsive table-bordered "  id="list_table">
               <th>Sl No.</th>
+			  <th>photo</th>
               <th>Certificate No.</th>
               <th>Center_Name.</th>
               <th>Mobile_No.</th>
+              <th>Download.</th>
               <th>whatsapp</th>
               <th>Edit</th>
+              <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?> 
+              <th>Delete</th>
+              <?php  } ?>
               <?php  $slno = 0;  foreach($training_cert_list as $training){ 
                 if($slno == 0){
                   $slno = 1;
                 }
+				$url = SITE_URL."calibration_details.php?training_cer_no=".$training['training_cer_no'];
                 ?>
               <tr>
                 <td><?php echo $slno++; ?></td>
+                <td><img  src="../img/training_cer_img/<?php echo $training['profimg']; ?>" style="width: 76px;" alt="profile_pic" /></td>
                 <td><?php echo $training['training_cer_no']; ?></td>
                 <td><?php echo $training['centername']; ?></td>
                 <td><?php echo $training['mobile']; ?></td>
-                <td><a class="text-success" style="font-size:32px;" href="#"><i class="fab fa-whatsapp"></i></a></td>
+				<td><a href="<?php echo $url;?>" target="_blank" class="btn btn-success" >Download</a></td>
+                <td><a class="text-success" style="font-size:32px;" href="https://wa.me/+91<?php echo $training['mobile']; ?>?text=Hi, <?php echo " ".$training['centername']." "; ?> Your training certificate has  generated successfully. Certificate No.<?php echo " ".$training['training_cer_no']." "; ?> for Your Reference Download Link: <?php echo $url; ?>   .  Thankyou...MARS Technologies Inc."><i class="fab fa-whatsapp"></i></a></td>
                 <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $training['id']; ?>&&training_cer_no=<?php echo $training['training_cer_no']; ?>&&centername=<?php echo $training['centername']; ?>&&mobile=<?php echo $training['mobile']; ?>&&address1=<?php echo $training['address1']; ?>&&address2=<?php echo $training['address2']; ?>&&traineename=<?php echo $training['traineename']; ?>"><i class="fas fa-edit"></i></a></td>
+                <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?>  
+                   <td class="text-center"><a class="text-danger" style="font-size:32px;" id="d_delete" href="../classes/handler.php?delete=<?php echo $training['training_cer_no']; ?>&&id=<?php echo $training['id']; ?>&&table=training_certificate" ><i class="fas fa-trash-alt"></i></a></td>
+              <?php  } ?>
               </tr>
               <?php  } ?>
             </table>
@@ -888,6 +940,9 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
               <th>Mobile_No.</th>
               <th>whatsapp</th>
               <th>Edit</th>
+              <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?>  
+              <th>Delete</th>
+              <?php  } ?> 
               <?php  $slno = 0;  foreach($amc_cert_list as $amc){ 
                 if($slno == 0){
                   $slno = 1;
@@ -900,6 +955,9 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
                 <td><?php echo $amc['mobile']; ?></td>
                 <td><a class="text-success" style="font-size:32px;" href="#"><i class="fab fa-whatsapp"></i></a></td>
                 <td><a class="text-info" target="_blank" style="font-size:32px;" href="?id=<?php echo $amc['id']; ?>&&amc_cer_no=<?php echo $amc['amc_cer_no']; ?>&&centername=<?php echo $amc['centername']; ?>&&mobile=<?php echo $amc['mobile']; ?>&&address1=<?php echo $amc['address1']; ?>&&address2=<?php echo $amc['address2']; ?>&&ownername=<?php echo $amc['ownername']; ?>&&slno=<?php echo $amc['slno']; ?>&&certificate_issue_date=<?php echo $amc['certificate_issue_date']; ?>&&certificate_valid_date=<?php echo $amc['certificate_valid_date']; ?>&&fueltype=<?php echo $amc['fueltype']; ?>"><i class="fas fa-edit"></i></a></td>
+                <?php if($_SESSION['admin_session_data'][0]['usertype']  == "superadmin"){ ?>  
+                   <td class="text-center"><a class="text-danger" style="font-size:32px;" id="d_delete" href="../classes/handler.php?delete=<?php echo $amc['id']; ?>&&id=<?php echo $amc['id']; ?>&&table=amc" ><i class="fas fa-trash-alt"></i></a></td>
+              <?php  } ?> 
               </tr>
               <?php  } ?>
             </table>
@@ -1241,7 +1299,9 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
               <div class="form-group mt-1">
                  <label for=""><b>Sl.No.</b></label>
                  <input type="text" name="slno" placeholder="if both : ex-345-456 (diesel-petrol)" class="form-control" required>
-              </div>  
+                 <input type="hidden" name="issue_date">
+                 <input type="hidden" name="valid_date">
+                </div>  
               <div class="form-group text-center mt-3">
                  <input type="submit" class="btn btn-primary" value="submit">
               </div>
@@ -1316,7 +1376,7 @@ if(isset($_SESSION['admin_session_data'][0]['username'])){
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Calibration Details</h5>
+        <h5 class="modal-title" id="modal_title">Calibration Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

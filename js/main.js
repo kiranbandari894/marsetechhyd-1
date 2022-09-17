@@ -389,5 +389,31 @@ $(document).on("submit","#new_amc_form",function(e){
      }
   });
 });
+$(document).on("click","#d_delete",function(e){
+  e.preventDefault();
+  var url = $(this).attr('href');
+  var confirmation = confirm("Are you sure to delete ?");
+   if(confirmation == true){
+   
+   $.ajax({
+     url : url,
+     method : "POST",
+     success : function(res){
+      var res_data = JSON.parse(res);
+      if(res_data.status =="success"){
+        alert(res_data.message);
+        location.reload();
+      }else{
+        alert(res_data.message);
+       
+      }
+     }
+  });
+   
+}
+});
+
+
+
 
 });

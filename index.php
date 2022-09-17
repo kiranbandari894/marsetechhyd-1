@@ -1,11 +1,10 @@
-<?php 
-date_default_timezone_set("Asia/kolkata");  
-include_once('./constants.php');
-include('./classes/main_class.php');
-$obj = new marsetech(HOST,USER,PASS,DB);
-$products = $obj->load_products("products");
+<?php
+date_default_timezone_set('Asia/kolkata');
+include_once './constants.php';
+include './classes/main_class.php';
+$obj = new marsetech(HOST, USER, PASS, DB);
+$products = $obj->load_products('products');
 
- 
 $host = HOST;
 ?>
 <!DOCTYPE html>
@@ -54,15 +53,18 @@ $host = HOST;
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="?about"><i class="fas fa-brain"></i> About us</a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="?products"><i class="fas fa-cart-arrow-down"></i> Products</a>
-            </li>
+            </li> -->
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="?contact"><i class="fas fa-address-book"></i> Contact us</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active" data-bs-toggle="modal" data-bs-target="#Login_admin" aria-current="page" href=""><i class="fas fa-sign-in-alt"></i> Login</a>
             </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="qrlogin.php"><i class="fas fa-qrcode"></i> Login</a>
+            </li> -->
             <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Dropdown
@@ -78,7 +80,7 @@ $host = HOST;
               <a class="nav-link disabled">Disabled</a>
             </li> -->
         </ul>
-        <form class="d-flex" action="./calibration_search.php?cer_no=" data-host="<?php echo SERCH_URL;  ?>" role="search" method="GET" id="search_form">
+        <form class="d-flex" action="./calibration_search.php?cer_no=" data-host="<?php echo SERCH_URL; ?>" role="search" method="GET" id="search_form">
             <input class="form-control me-2 search_certificate" type="text" name="search_certificate" placeholder="Certificate No." aria-label="Search">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
@@ -131,9 +133,7 @@ $host = HOST;
    </div>
 <!-- Home page Ends -->
 <!-- About Page -->
-   <?php 
-     if(isset($_GET['about'])){
-   ?>
+   <?php if (isset($_GET['about'])) { ?>
       <style>
         .home-page{
             display: none;
@@ -175,12 +175,10 @@ There are largely three main sets of standards: United States, Japanese, and Eur
         </div>
     </div>
 
-   <?php     
-     }
-   ?>
+   <?php } ?>
    <!-- About page Ends -->
    <!-- Products Page -->
-      <?php if(isset($_GET['products'])){ ?>
+      <?php if (isset($_GET['products'])) { ?>
         <style>
         .home-page{
             display: none;
@@ -195,20 +193,22 @@ There are largely three main sets of standards: United States, Japanese, and Eur
               <div class="col-sm-12 col-md-6">
 <!--  Product Cards   -->
                  <div class="card" style="max-width: 100%;height:100%!important;">
-              <?php
-               if($products){
-
-               
-               foreach($products as $product){ 
-               ?>
+              <?php if ($products) {
+                  foreach ($products as $product) { ?>
                  <div class="row g-0 border border-info">
                   <div class="col-md-4">
-                    <img src="img/products_img/<?php echo $product['cover_images']; ?>" class="img-fluid rounded-start" alt="...">
+                    <img src="img/products_img/<?php echo $product[
+                        'cover_images'
+                    ]; ?>" class="img-fluid rounded-start" alt="...">
                   </div>
                   <div class="col-md-8">
                     <div class="card-body">
-                      <h5 class="card-title"><?php echo $product['machine_name']; ?></h5>
-                      <h6><i class="fas fa-rupee-sign"></i> <?php echo $product['machine_price']; ?> </h6> 
+                      <h5 class="card-title"><?php echo $product[
+                          'machine_name'
+                      ]; ?></h5>
+                      <h6><i class="fas fa-rupee-sign"></i> <?php echo $product[
+                          'machine_price'
+                      ]; ?> </h6> 
                       <ul>
                         <li><b>Brand:</b> Marse</li>
                         <!-- <li><b>Weight: 6kg</b></li> -->
@@ -217,21 +217,26 @@ There are largely three main sets of standards: United States, Japanese, and Eur
                         <li><b>Power Supply(V per Hz):220V </b></li>
                         <!-- <li><b>Warm Up: 10min</b></li> -->
                       </ul>
-                       <p style="line-height:31px;">Contact: <?php echo $product['mobile'];   ?> or Chat  <a class="text-success" style="font-size:32px;" href="#"><i class="fab fa-whatsapp"></i></a></p>
-                      <p class="card-text"><small class="text-muted"><?php echo $product['uploaded_on']; ?></small></p>
+                       <p style="line-height:31px;">Contact: <?php echo $product[
+                           'mobile'
+                       ]; ?> or Chat  <a class="text-success" style="font-size:32px;" href="#"><i class="fab fa-whatsapp"></i></a></p>
+                      <p class="card-text"><small class="text-muted"><?php echo $product[
+                          'uploaded_on'
+                      ]; ?></small></p>
                     </div>
                   </div>
                 </div>
 
-                <?php
-                  } 
-                }else{ ?>
+                <?php }
+              } else {
+                   ?>
                   <div class="row">
                     <div class="col-sm-12">
                        <p class="alert alert-danger"> No Products found</p>
                     </div>
                   </div>
-                <?php    } ?>
+                <?php
+              } ?>
               </div>
 <!--  Product Cards Ends  -->
               </div>
@@ -242,7 +247,7 @@ There are largely three main sets of standards: United States, Japanese, and Eur
       <?php } ?>
    <!-- Products Page End -->
    <!-- Contact Form -->
-    <?php if(isset($_GET['contact'])){ ?>
+    <?php if (isset($_GET['contact'])) { ?>
       <style>
         .home-page{
             display: none;
@@ -335,6 +340,7 @@ There are largely three main sets of standards: United States, Japanese, and Eur
     <script src="./js/bootstrap.min.js"></script>
     <script src="./css/fontawsome/js/all.min.js"></script>
     <script src="./js/main.js"></script>
+ 
     
   <!-- Js scripts End-->
 <!-- Modal -->
@@ -371,7 +377,7 @@ There are largely three main sets of standards: United States, Japanese, and Eur
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Calibration Details</h5>
+        <h5 class="modal-title">Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

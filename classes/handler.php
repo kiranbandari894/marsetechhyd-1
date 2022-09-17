@@ -13,10 +13,20 @@ if(isset($_GET['contact_form'])){
 
 // Login admin
 if(isset($_GET['login'])){
-$_POST['password'] = md5($_POST['password']);
+  $_POST['password'] = md5($_POST['password']);
  
   echo $database->Login('users',$_POST,"and","admin/");
 }
+if(isset($_GET['qrlogin'])){
+  $_POST['password'] = base64_decode($_POST['password']);
+  // echo json_encode(["password"=>$_POST['password']]);
+  $_POST['password'] = md5($_POST['password']);
+  // echo json_encode(["password"=>$_POST['password']]);
+ 
+  echo $database->Login('users',$_POST,"and","admin/");
+}
+
+
 //Function for creating new Calibration 
 if(isset($_GET['calibration_new'])){
     // calibration certificate No.
@@ -81,7 +91,7 @@ if(isset($_GET['calibration_new'])){
 }
 
 // funcion for renew the calibration
-if(isset($_GET['update_calibration'])){
+if(isset($_GET['update_calsmibration'])){
  
  $_POST['calibration_serial'] = 'MARS-CAL-'.$_POST['calibration_serial'];
  echo $database->update('calibrations',$_POST,'',"../img/qrcodes/");
@@ -135,7 +145,9 @@ if(isset($_GET['edit_amc_cert'])){
   $amc_cer_no = $_POST['amc_cer_no'];
   array_shift($_POST);
   array_shift($_POST);
- echo $database->edit_calibration("amc",$_POST,",",$id,$amc_cer_no,"AMC"); 
+  
+  echo $database->edit_calibration("amc",$_POST,",",$id,$amc_cer_no,"AMC"); 
+
 }
 
 // Change password
@@ -209,6 +221,7 @@ if(isset($_GET['create_amc'])){
     $certificate_valid_date = date_create(date("Y-m-d"));
     date_add($certificate_valid_date,date_interval_create_from_date_string('1 year'));
     date_sub($certificate_valid_date,date_interval_create_from_date_string('1 day'));
+ 
     $certificate_valid_date =  date_format($certificate_valid_date,'dS')." of ".date_format($certificate_valid_date,'M Y');
     $_POST['certificate_valid_date'] = $certificate_valid_date;
   
@@ -219,7 +232,7 @@ if(isset($_GET['create_amc'])){
       $date1 = date('Y-m-d',$date1);
       $amc_date = date_create($date1);
       date_add($amc_date,date_interval_create_from_date_string("365 days"));
-      date_sub($amc_date,date_interval_create_from_date_string('1 day')); 
+      date_sub($amc_date,date_interval_create_from_date_string('9 days')); 
       $amc_validity = date_format($amc_date,"d-m-Y");
       $_POST['issue_date'] = date('d-m-Y');
       $_POST['valid_date'] = $amc_validity;
@@ -236,6 +249,18 @@ if(isset($_GET['create_amc'])){
       echo $result;
     }
 	 
+}
+
+if(isset($_GET['delete'])){
+ // print_r($_GET);
+ $cert_no = $_GET['id'];
+ $cert_table = $_GET['table'];
+  $result = $database->delete_cert($cert_table,"id",$cert_no);
+  if($result == "success"){
+    echo json_encode(["status"=>"success","message"=>"Deleted Successfully.."]);
+  }else{
+    echo json_encode(["status"=>"fail","message"=>"Fail to Delete record or No record found"]);
+  }
 }
 
 ?>

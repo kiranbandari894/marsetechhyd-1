@@ -4,7 +4,7 @@ include_once('../css/mpdf/fpdf.php');
 $date = "Date : ".date('d/m/Y');
 $certificate_no = $_GET['amc_cer_no'];
 $ownername = $_GET['ownername'];
-$cer_date = $_GET['cer_date'];
+// $cer_date = $_GET['cer_date'];
 $ownername = $_GET['ownername'];
 $centername = $_GET['centername'];
 $address1 = $_GET['address1'];
@@ -29,7 +29,7 @@ $pdf->Image('../img/qrcodes/'.$certificate_no.'.png',160,60);
 $pdf->SetFont('Times','I',12);
 $pdf->SetY(53);
 $pdf->SetX(110);
-$pdf->Cell(78,8,$date,0,1,'R');
+$pdf->Cell(78,8,$cer_date,0,1,'R');
 // date end
 
 // date

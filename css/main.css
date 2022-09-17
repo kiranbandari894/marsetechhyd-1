@@ -128,7 +128,19 @@ table#detials_table {
     margin-bottom: 83px !important;
     border: 1px solid aquamarine !important;
 }
+div#qrbody {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
 @media screen and (max-width:650px){
+    form#new_amc_form {
+        width: 100% !important;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 39px !important;
+    }
     form#calibration_form {
         width: 100% !important;
     }

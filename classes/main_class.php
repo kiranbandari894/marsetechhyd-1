@@ -153,7 +153,7 @@ public function search_cer($table,$certificateno,$operator,$search_type){
 }
 //  function to generate QR code
    public function generateQR($tempDir=null,$file_name=null,$data=null){
-        
+    
         if(!empty($file_name) || $file_name != null){
             $codeContents =  $data;
         }else{
@@ -406,6 +406,7 @@ public function edit_calibration($table,$data,$operator,$id,$calibration_serial,
         }else{
             $url ="";
         }
+        $this->generateQR('../img/qrcodes/',$calibration_serial,"".SITE_URL."calibration_details.php?amc_cer_no=".$calibration_serial."");
         return json_encode([
             "status"=>"success",
             "message"=>"Successfully Modified...",
@@ -444,7 +445,17 @@ public function update_value($table,$data,$operator,$id){
 }	
 	
 
-
+// function for delete 
+public function delete_cert($table,$deleteKey,$deleteValue){
+    $que = "DELETE FROM $table where $deleteKey='".$deleteValue."'";
+   // return $que;
+    $run = mysqli_query($this->con,$que); 
+    if($run){
+        return "success";
+    }else{
+        return "fail";
+    }
+}
 
    public function __destruct()
    {

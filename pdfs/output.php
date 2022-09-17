@@ -197,27 +197,27 @@ $pdf->MultiCell(145,6,"Leak Test : NA",'LRTB','L',false);
 // ********* Eleventh  Row  ****************
 $pdf->SetFont('Times','BI',11);
 $pdf->SetX(18);
-$pdf->Cell(16,6,"5.0",'LRTB',0,'L');
+$pdf->Cell(16,6,"",'LRTB',0,'L');
 
 $pdf->SetFont('Times','BI',11);
 $pdf->SetX(34);
-$pdf->MultiCell(145,6,"One no.of petrol checked for idling Emission.",'LRTB','L',false);
+$pdf->MultiCell(145,6,"One no.of Diesel vehicle is checked for free acceleration test.",'LRTB','L',false);
  
 // ********* Eleventh Row End  ****************
 // ********* ninth  Row  ****************
 $pdf->SetFont('Times','BI',11);
 $pdf->SetX(18);
-$pdf->Cell(16,6,"6.0",'LRTB',0,'L');
+$pdf->Cell(16,6,"",'LRTB',0,'L');
 
 $pdf->SetFont('Times','BI',11);
 $pdf->SetX(34);
-$pdf->MultiCell(145,6,"Conclusion : Four Gas Analyser working satisfactorily.",'LRTB','L',false);
+$pdf->MultiCell(145,6,"Conclusion : Smoke Meter is working satisfactorily.",'LRTB','L',false);
  
 // ********* Ninth Row End  ****************
 // *********Tenth  Row  ****************
 $pdf->SetFont('Times','BI',11);
 $pdf->SetX(18);
-$pdf->Cell(16,6,"7.0",'LRTB',0,'L');
+$pdf->Cell(16,6,"8.0",'LRTB',0,'L');
 
 $pdf->SetFont('Times','BI',11);
 $pdf->SetX(34);
